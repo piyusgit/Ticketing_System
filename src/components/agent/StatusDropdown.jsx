@@ -8,11 +8,13 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
+
 const StatusDropdown = ({ ticketId, refresh }) => {
   const updateStatus = async (status) => {
     try {
       await axios.patch(
-        `http://localhost:5000/agent/ticket/${ticketId}/status`,
+        `${API_URL}/agent/ticket/${ticketId}/status`,
         { status },
         {
           withCredentials: true,

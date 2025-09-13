@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -24,13 +25,9 @@ const Register = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:5000/register",
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await axios.post(`${API_URL}/register`, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
       console.log(response);
       setMessage(response.data.message);
       navigate("/login");

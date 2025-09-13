@@ -1,41 +1,73 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "",
+  });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🔹 Generic handler for inputs
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 🔹 Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
-      const res = await axios.post("http://localhost:5000/login", formData, {
+      const res = await axios.post(`${API_URL}/login`, formData, {
         withCredentials: true,
       });
-      console.log(res.data);
-      //   localStorage.setItem("userToken", res.data.token);
-      //   console.log(res.data.token);
-      navigate("/profile");
+
+      console.log("Login success:", res.data);
+
+      // Navigate based on role
+      if (formData.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (formData.role === "agent") {
+        navigate("/agent/profile");
+      } else {
+        navigate("/profile");
+      }
     } catch (err) {
-      setError(err.response?.data?.error || "Login failed");
-      console.error(err.response?.data?.error || "Login failed");
+      const msg = err.response?.data?.error || "Login failed";
+      setError(msg);
+      console.error("Login error:", msg);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md w-96"
+        className="bg-white p-8 rounded-2xl shadow-md w-96"
       >
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        <div>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          Login
+        </h2>
+
+        {/* Error message */}
+        {error && (
+          <p className="mb-4 text-red-500 text-sm bg-red-50 p-2 rounded">
+            {error}
+          </p>
+        )}
+
+        {/* Email */}
+        <div className="mb-4">
           <label
             htmlFor="email"
             className="block mb-1 text-sm font-medium text-gray-600"
@@ -45,13 +77,16 @@ const Login = () => {
           <input
             type="email"
             name="email"
-            placeholder="Email"
-            className="w-full p-2 border rounded mb-3"
+            placeholder="Enter your email"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={formData.email}
             onChange={handleChange}
+            required
           />
         </div>
-        <div>
+
+        {/* Password */}
+        <div className="mb-4">
           <label
             htmlFor="password"
             className="block mb-1 text-sm font-medium text-gray-600"
@@ -61,13 +96,16 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            placeholder="Password"
-            className="w-full p-2 border rounded mb-3"
+            placeholder="Enter your password"
+            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={formData.password}
             onChange={handleChange}
+            required
           />
         </div>
-        <div>
+
+        {/* Role */}
+        <div className="mb-6">
           <label
             htmlFor="role"
             className="block mb-1 text-sm font-medium text-gray-600"
@@ -83,19 +121,22 @@ const Login = () => {
             required
           >
             <option value="">-- Select Role --</option>
-            <option value="user">user</option>
-            <option value="agent">agent</option>
-            <option value="admin">admin</option>
+            <option value="user">User</option>
+            <option value="agent">Agent</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
-        <div>
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
-          >
-            Login
-          </button>
-        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full ${
+            loading ? "bg-gray-400" : "bg-green-500 hover:bg-green-600"
+          } text-white p-2 rounded-lg font-medium transition`}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
     </div>
   );

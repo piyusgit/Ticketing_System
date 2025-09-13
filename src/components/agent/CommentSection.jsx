@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const CommentSection = ({ ticket, refresh }) => {
   const [commentText, setCommentText] = useState("");
   const addComment = async () => {
+    if (!commentText.trim()) return;
     try {
       await axios.post(
-        `http://localhost:5000/agent/tickets/${ticket._id}/comment`,
+        `${API_URL}/agent/tickets/${ticket._id}/comment`,
         { text: commentText },
         {
           withCredentials: true,
@@ -23,7 +25,7 @@ const CommentSection = ({ ticket, refresh }) => {
   return (
     <div className="space-y-2">
       <h4 className="font-semibold">Comments:</h4>
-      {ticket.comments.length === 0 ? (
+      {ticket.comments?.length === 0 ? (
         <p className="text-sm text-gray-500">No comments yet.</p>
       ) : (
         ticket.comments.map((c) => (

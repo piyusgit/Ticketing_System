@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const TicketDetails = () => {
   const { id } = useParams(); // ticketId from URL
@@ -16,7 +17,7 @@ const TicketDetails = () => {
 
   const fetchTicket = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/admin/tickets/${id}`, {
+      const res = await axios.get(`${API_URL}/admin/tickets/${id}`, {
         withCredentials: true,
       });
       setTicket(res.data);

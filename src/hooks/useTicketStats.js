@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
+
 const initialStats = {
   open: 0,
   "in progress": 0,
@@ -20,7 +22,7 @@ export default function useTicketStats() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/admin/tickets/stats", {
+      const res = await axios.get(`${API_URL}/admin/tickets/stats`, {
         withCredentials: true,
       });
 

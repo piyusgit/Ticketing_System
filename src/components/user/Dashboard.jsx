@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import TicketForm from "./TicketForm";
 import TicketDetail from "./TicketDetail";
 import TicketList from "./TicketList";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const Dashboard = () => {
   const [tickets, setTickets] = useState([]);
@@ -13,14 +14,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/user/ticket/myTickets",
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axios.get(`${API_URL}/user/ticket/myTickets`, {
+          withCredentials: true,
+        });
         console.log(res.data);
-        setTickets(res.data);
+        setTickets(res.data || []);
       } catch (err) {
         console.error("Error fetching tickets:", err.response?.data?.message);
       }

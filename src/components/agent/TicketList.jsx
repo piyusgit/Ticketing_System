@@ -1,9 +1,13 @@
 import React from "react";
 import TicketCard from "./TicketCard";
 
+const EmptyState = ({ message }) => (
+  <p className="text-gray-500 text-center italic">{message}</p>
+);
+
 const TicketList = ({ tickets, refresh }) => {
   if (tickets.length === 0) {
-    return <p>No tickets assigned to you.</p>;
+    return <EmptyState message="No tickets assigned to you." />;
   }
 
   return (

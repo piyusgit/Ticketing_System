@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 
 const TicketForm = ({ onTicketCreated }) => {
   const [formData, setFormData] = useState({
@@ -22,13 +23,9 @@ const TicketForm = ({ onTicketCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/user/ticket",
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.post(`${API_URL}/user/ticket`, formData, {
+        withCredentials: true,
+      });
       console.log(res.data);
       onTicketCreated(res.data);
       setFormData({

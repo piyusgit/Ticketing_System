@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
 export default function useTickets() {
   const [tickets, setTickets] = useState([]);
   const [agents, setAgents] = useState([]);
@@ -15,7 +15,7 @@ export default function useTickets() {
   const fetchTickets = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/admin/tickets", {
+      const res = await axios.get(`${API_URL}/admin/tickets`, {
         withCredentials: true,
       });
       setTickets(res.data);
@@ -28,7 +28,7 @@ export default function useTickets() {
 
   const fetchAgents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/admin/agents", {
+      const res = await axios.get(`${API_URL}/admin/agents`, {
         withCredentials: true,
       });
       setAgents(res.data);
@@ -40,7 +40,7 @@ export default function useTickets() {
   const updateTicketStatus = async (ticketId, status) => {
     try {
       const res = await axios.patch(
-        `http://localhost:5000/admin/tickets/${ticketId}/status`,
+        `${API_URL}/admin/tickets/${ticketId}/status`,
         { status },
         { withCredentials: true }
       );
@@ -58,7 +58,7 @@ export default function useTickets() {
   const assignTicket = async (ticketId, agentId) => {
     try {
       const res = await axios.patch(
-        `http://localhost:5000/admin/ticket/${ticketId}/assign`,
+        `${API_URL}/admin/ticket/${ticketId}/assign`,
         { assignedTo: agentId },
         { withCredentials: true }
       );
@@ -77,7 +77,7 @@ export default function useTickets() {
 
   const deleteTicket = async (ticketId) => {
     try {
-      await axios.delete(`http://localhost:5000/tickets/${ticketId}`, {
+      await axios.delete(`${API_URL}/admin/tickets/${ticketId}`, {
         withCredentials: true,
       });
       setTickets((prev) => prev.filter((t) => t._id !== ticketId));

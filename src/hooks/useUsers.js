@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_FRONTEND_URL;
+
 export default function useUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ export default function useUsers() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/admin/users", {
+      const res = await axios.get(`${API_URL}/admin/users`, {
         withCredentials: true,
       });
       setUsers(res.data);
@@ -26,7 +28,7 @@ export default function useUsers() {
 
   const deleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5000/admin/users/${userId}`, {
+      await axios.delete(`${API_URL}/admin/users/${userId}`, {
         withCredentials: true,
       });
       setUsers((prev) => prev.filter((u) => u._id !== userId));
@@ -38,7 +40,7 @@ export default function useUsers() {
   const updateUserRole = async (userId, newRole) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/admin/users/${userId}/role`,
+        `${API_URL}/admin/users/${userId}/role`,
         { role: newRole },
         { withCredentials: true }
       );
